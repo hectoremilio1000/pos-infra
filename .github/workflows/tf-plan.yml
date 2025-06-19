@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 permissions:
-  id-token: write # para OIDC
+  id-token: write # OIDC con azure/login
   contents: read
 
 jobs:
@@ -14,24 +14,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ── Login a Azure con federated identity ──────────────────────────────
+      # ─────────── Login a Azure ───────────
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # ── Instala Terraform 1.7.5 en el runner ──────────────────────────────
+      # ─────────── Exporta ARM_* para Terraform ───────────
+      - name: Set ARM env vars
+        env:
+          CREDS: ${{ secrets.AZURE_CREDENTIALS }}
+        run: |
+          echo "ARM_CLIENT_ID=$(echo $CREDS       | jq -r .clientId)"          >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$(echo $CREDS   | jq -r .clientSecret)"      >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=$(echo $CREDS | jq -r .subscriptionId)"    >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$(echo $CREDS       | jq -r .tenantId)"          >> $GITHUB_ENV
+
+      # ─────────── Instala Terraform ───────────
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.7.5
 
-      # ── Comandos Terraform ------------------------------------------------
+      # ─────────── Comandos TF ───────────
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      # ── Sube el artefacto del plan para revisión en el PR ────────────────
+      # ─────────── Artefacto del plan ───────────
       - uses: actions/upload-artifact@v4
         with:
           name: tfplan
