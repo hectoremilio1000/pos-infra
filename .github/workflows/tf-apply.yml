@@ -15,21 +15,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ── Login a Azure (OIDC / SP JSON) ────────────────────────────────────
+      # ─────────── Login a Azure ───────────
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # ── Instala Terraform -------------------------------------------------
+      # ─────────── Exporta ARM_* ───────────
+      - name: Set ARM env vars
+        env:
+          CREDS: ${{ secrets.AZURE_CREDENTIALS }}
+        run: |
+          echo "ARM_CLIENT_ID=$(echo $CREDS       | jq -r .clientId)"          >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$(echo $CREDS   | jq -r .clientSecret)"      >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=$(echo $CREDS | jq -r .subscriptionId)"    >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$(echo $CREDS       | jq -r .tenantId)"          >> $GITHUB_ENV
+
+      # ─────────── Instala Terraform ───────────
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.7.5
 
-      # ── Ejecuta Init + Apply ---------------------------------------------
+      # ─────────── Comandos TF ───────────
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Apply
         env:
-          TF_INPUT: false # evita prompts interactivos
+          TF_INPUT: false
         run: terraform apply -auto-approve
