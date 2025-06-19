@@ -1,0 +1,28 @@
+replicaCount: 2
+
+image:
+  repository: posacr.azurecr.io/your-service
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+service:
+  type: ClusterIP
+  port: 3000
+
+livenessProbe:
+  path: /health
+  port: 3000
+readinessProbe:
+  path: /health
+  port: 3000
+
+ingress:
+  enabled: false
