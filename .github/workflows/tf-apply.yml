@@ -14,14 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # ── Login a Azure (OIDC / SP JSON) ────────────────────────────────────
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # ── Instala Terraform -------------------------------------------------
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.7.5
+
+      # ── Ejecuta Init + Apply ---------------------------------------------
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Apply
         env:
-          TF_INPUT: false
+          TF_INPUT: false # evita prompts interactivos
         run: terraform apply -auto-approve
