@@ -1,3 +1,5 @@
 .terraform/
 *.tfstate*
 crash.log
+
+gh-sp.json
