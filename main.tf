@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
     resource_group_name  = "myTFResourceGroup"
-    storage_account_name = "posinfrastate"   # ← el que creaste
+    storage_account_name = "posinfrastate" # ← el que creaste
     container_name       = "tfstate"
     key                  = "posinfra.terraform.tfstate"
   }
