@@ -34,3 +34,19 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: # 👈 NUEVO
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false" # ← redirección permanente
+    acme.cert-manager.io/http01-edit-in-place: "true" # ← evita solver extra
+  hosts:
+    - host: 172-171-115-82.nip.io
+      paths:
+        - /
+  tls:
+    - hosts:
+        - 172-171-115-82.nip.io
+      secretName: webapp-tls # sin espacios, minúsculas
