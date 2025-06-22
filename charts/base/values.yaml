@@ -6,8 +6,10 @@ image:
   repository: posacrfa01.azurecr.io/pos-webapp # ← tu ACR
   tag: '{{ .Env.IMAGE_TAG | default "dev" }}'
   pullPolicy: IfNotPresent
-  port: 80
-  portName: http
+# ------------- 👇 nuevo bloque al mismo nivel que image:
+port: 80 # número que abre el contenedor
+portName: http # nombre simbólico que usan las probes
+# -------------------------------------------------------
 
 service:
   type: ClusterIP
