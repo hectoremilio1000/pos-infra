@@ -3,13 +3,8 @@ replicaCount: 2
 
 image:
   repository: posacrfa01.azurecr.io/pos-webapp # ← tu ACR
-  tag: '{{ .Env.IMAGE_TAG | default "dev" }}'
+  tag: "{{ .Env.IMAGE_TAG | default .Chart.AppVersion }}"
   pullPolicy: IfNotPresent
-
-# --- nuevo bloque ---
-port: 80 # nº que abre el contenedor
-portName: http # nombre simbólico que usan las probes
-# ---------------------
 
 service:
   type: ClusterIP
