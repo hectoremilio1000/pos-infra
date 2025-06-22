@@ -35,8 +35,9 @@ ingress:
   className: nginx
   annotations: # 👈 NUEVO
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/ssl-redirect: "false" # ← redirección permanente
-    acme.cert-manager.io/http01-edit-in-place: "true" # ← evita solver extra
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    acme.cert-manager.io/http01-edit-in-place: "true"
   hosts:
     - host: 172-171-115-82.nip.io
       paths:
