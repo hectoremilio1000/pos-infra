@@ -6,8 +6,8 @@ image:
   repository: posacrfa01.azurecr.io/pos-webapp # ← tu ACR
   tag: '{{ .Env.IMAGE_TAG | default "dev" }}'
   pullPolicy: IfNotPresent
-
-containerPort: 80
+  port: 80
+  portName: http
 
 service:
   type: ClusterIP
