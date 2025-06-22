@@ -1,31 +1,29 @@
 # charts/base/values.yaml  🔥 ÚNICO FUENTE DE VERDAD
-
 replicaCount: 2
 
 image:
   repository: posacrfa01.azurecr.io/pos-webapp # ← tu ACR
   tag: '{{ .Env.IMAGE_TAG | default "dev" }}'
   pullPolicy: IfNotPresent
-# ------------- 👇 nuevo bloque al mismo nivel que image:
-port: 80 # número que abre el contenedor
+
+# --- nuevo bloque ---
+port: 80 # nº que abre el contenedor
 portName: http # nombre simbólico que usan las probes
-# -------------------------------------------------------
+# ---------------------
 
 service:
   type: ClusterIP
   port: 80
 
 livenessProbe:
-  httpGet:
-    path: /
-    port: 80
+  path: /
+  port: 80
   initialDelaySeconds: 3
   periodSeconds: 10
 
 readinessProbe:
-  httpGet:
-    path: /
-    port: 80
+  path: /
+  port: 80
   initialDelaySeconds: 3
   periodSeconds: 10
 
@@ -36,19 +34,3 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
-
-ingress:
-  enabled: true
-  className: nginx
-  annotations: # 👈 NUEVO
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/ssl-redirect: "false" # ← redirección permanente
-    acme.cert-manager.io/http01-edit-in-place: "true" # ← evita solver extra
-  hosts:
-    - host: 172-171-115-82.nip.io
-      paths:
-        - /
-  tls:
-    - hosts:
-        - 172-171-115-82.nip.io
-      secretName: webapp-tls # sin espacios, minúsculas
