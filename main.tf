@@ -327,3 +327,4 @@ resource "azurerm_role_assignment" "aks_pull_acr" {
   role_definition_name = "AcrPull"
   principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
 }
+# ci-test comment
