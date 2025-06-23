@@ -1,10 +1,8 @@
 replicaCount: 2
-
 image:
   repository: posacrfa01.azurecr.io/pos-webapp
-  tag: "84febf3"
+  tag: "a24c39b56cd7793b829be264fd97510144b5115c"
   pullPolicy: IfNotPresent
-
 resources:
   requests:
     cpu: 100m
@@ -12,18 +10,15 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
-
 service:
   type: ClusterIP
   port: 80
-
 livenessProbe:
   path: /
   port: 80
 readinessProbe:
   path: /
   port: 80
-
 ingress:
   enabled: true
   className: nginx
