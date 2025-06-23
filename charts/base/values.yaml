@@ -1,8 +1,8 @@
 replicaCount: 2
 
 image:
-  repository: posacr.azurecr.io/your-service
-  tag: "0.1.0"
+  repository: posacrfa01.azurecr.io/pos-webapp
+  tag: "84febf3"
   pullPolicy: IfNotPresent
 
 resources:
@@ -15,14 +15,14 @@ resources:
 
 service:
   type: ClusterIP
-  port: 3000
+  port: 80
 
 livenessProbe:
-  path: /health
-  port: 3000
+  path: /
+  port: 80
 readinessProbe:
-  path: /health
-  port: 3000
+  path: /
+  port: 80
 
 ingress:
   enabled: true
