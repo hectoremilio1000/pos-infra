@@ -1,11 +1,8 @@
 ########################################
 # Helm – NGINX Ingress Controller
 ########################################
-
-# --- proveedor Helm apuntando al AKS -----------------------------
 provider "helm" {
   alias = "aks"
-
   kubernetes = {
     host                   = azurerm_kubernetes_cluster.aks.kube_admin_config[0].host
     cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_admin_config[0].cluster_ca_certificate)
@@ -14,7 +11,6 @@ provider "helm" {
   }
 }
 
-# --- despliegue del chart ---------------------------------------
 resource "helm_release" "ingress_nginx" {
   provider         = helm.aks
   name             = "ingress-nginx"
@@ -28,18 +24,19 @@ resource "helm_release" "ingress_nginx" {
 
   set = [
     {
+      # IP que llevará SIEMPRE el LoadBalancer
       name  = "controller.service.loadBalancerIP"
-      value = azurerm_public_ip.ingress_ip.ip_address
+      value = azurerm_public_ip.ingress_ip.ip_address      # ← usa ingress_ip
     },
     {
-      # para que el LB se cree en el mismo RG del cluster
+      # Asegura que el LB se cree en el RG del cluster
       name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-resource-group"
       value = azurerm_resource_group.rg.name
     }
   ]
 
   depends_on = [
-    azurerm_public_ip.ingress_ip,
+    azurerm_public_ip.ingress_ip,                           # ← idem
     azurerm_kubernetes_cluster.aks
   ]
 }
