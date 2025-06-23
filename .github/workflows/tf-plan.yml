@@ -2,7 +2,8 @@ name: terraform-plan
 
 on:
   pull_request:
-    branches: [main]
+    paths:
+      - "**/*.tf"
 
 permissions:
   id-token: write # OIDC con azure/login
